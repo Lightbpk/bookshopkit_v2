@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">bookshopkit_v2</string>
+    <string name="defBookName">NoName</string>
+    <string name="defBookPrev">gs://bookshopkitv2.appspot.com/previews/Empty.jpg</string>
+    <string name="defBookAuth">NoAuthor</string>
+    <string name="defBookNote">NoNote</string>
+    <string name="defBookFile">empty.zip</string>
+</resources>
