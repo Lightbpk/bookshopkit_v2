@@ -2,13 +2,8 @@ package com.example.bookshopkit_v2;
 
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 public class Book {
     private static final String LL = "LightLog";
@@ -20,24 +15,28 @@ public class Book {
             note = "no note",
             type = "free",
             file = "empty.zip";
-    public Book(int ID){
-           this.ID = ID;
-           DataGetThread bookLoadThread = new DataGetThread();
-           bookLoadThread.start();
-           while (!bookLoadThread.getComplite()) {
-               try
-               {
-                   Thread.sleep(500);
-                   Log.d(LL,"Sleeping 500");
-               }catch (Exception e){
-                   Log.d(LL,"Sleeping fail");
-               }
-           }
+    public Book(int ID) {
+        this.ID = ID;
+        DataGetThread bookLoadThread = new DataGetThread();
+        bookLoadThread.start();
+        do {
+            Log.d(LL,"do ");
+            if (bookLoadThread.isComplite()) {
+                Log.d(LL, "load complite");
+                break;
+            }else{
+
+            }
+
+
+        }
+        while (true);
         lastSnap = bookLoadThread.getLastSnap();
     }
-    public int getID(){
-        return ID;
-    }
+    public int getID () {
+            return ID;
+        }
+
     public String getName(){
         if(lastSnap.child("b"+ID).hasChild("Name")) {
             name = "" + lastSnap.child("Name").getValue();

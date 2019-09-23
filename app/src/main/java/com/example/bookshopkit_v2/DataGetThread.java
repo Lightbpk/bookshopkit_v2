@@ -12,20 +12,30 @@ import com.google.firebase.database.ValueEventListener;
 
 public class DataGetThread extends Thread {
     private static final String LL = "LightLog";
-    FirebaseDatabase database = FirebaseDatabase. getInstance ();
-    DatabaseReference booksRef = database.getReference ( "booksBase" );
-    boolean loadComplite = false;
-    @NonNull DataSnapshot lastSnap ;
+    private FirebaseDatabase database = FirebaseDatabase. getInstance ();
+    private DatabaseReference booksRef = database.getReference ( "booksBase" );
+    private volatile DataSnapshot lastSnap = null ;
+    private volatile boolean loadComplite = false;
+
+    DataSnapshot getLastSnap() {
+        return lastSnap;
+    }
+    boolean isComplite(){
+        return loadComplite;
+    }
+public DataGetThread(){
+
+}
     @Override public void run(){
         Log.d(LL,"DataGetThread start");
-       booksRef.addValueEventListener(new ValueEventListener() {git
+        Log.d(LL,"bookRef "+booksRef);
+           booksRef.addValueEventListener(new ValueEventListener() {
            @Override
            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 lastSnap = dataSnapshot;
                 Log.d(LL,"Snap granted");
                 loadComplite = true;
            }
-
            @Override
            public void onCancelled(@NonNull DatabaseError databaseError) {
                Log.d(LL,"cancel update");
@@ -34,11 +44,4 @@ public class DataGetThread extends Thread {
        }) ;
     }
 
-    @NonNull
-    public DataSnapshot getLastSnap() {
-        return lastSnap;
-    }
-    public boolean getComplite(){
-        return loadComplite;
-    }
 }

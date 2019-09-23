@@ -7,8 +7,12 @@ import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 public class BookListActivity extends Activity {
 final String LL ="LightLog";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
