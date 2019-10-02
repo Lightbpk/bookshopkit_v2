@@ -44,17 +44,18 @@ final int STATUS_NON = 0;
         setContentView(R.layout.activity_book_list);
         //------------------------------
         book_list_lay = findViewById(R.id.book_list_lay);
+        tw = findViewById(R.id.tw);
         bookListUpdate();
         h = new Handler(){
             public void handleMessage(android.os.Message msg){
 
                 if(msg.what == STATUS_OK){
                     tw.setText(book.getName());
-                    book_list_lay.addView(tw);
-                    Log.d(LL,"STATUS_OK");
+                    tw.invalidate();
+                    Log.d(LL,"STATUS_OK"+" "+book.getName());
                 }else if(msg.what == STATUS_NON){
                     tw.setText("nononon");
-                    book_list_lay.addView(tw);
+                    tw.invalidate();
                     Log.d(LL,"STATUS_NON");
                 }else Log.d(LL,"STATUS_undefine");
 
@@ -88,6 +89,7 @@ final int STATUS_NON = 0;
             while (!book.loadComplite){
             Log.d(LL,"Loading");
             }
+
             h.sendEmptyMessage(STATUS_OK);
         }
     }

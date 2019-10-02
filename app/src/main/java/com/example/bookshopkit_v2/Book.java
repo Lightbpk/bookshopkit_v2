@@ -76,8 +76,9 @@ public class Book {
         }
 
     public String getName(){
-        if(lastBookBaseSnap.hasChild("Name")) {
-            name = "" + lastBookBaseSnap.child("Name").getValue();
+        if(lastBookBaseSnap.child("b1").hasChild("Name")) {
+            name = "" + lastBookBaseSnap.child("b1").child("Name").getValue();
+            Log.d(LL,"");
         }
         return name;
 
