@@ -23,8 +23,8 @@ final String LL ="LightLog";
         setContentView(R.layout.activity_book_list);
         //------------------------------
         Book book = new Book(1);
-        Log.d(LL,"id "+book.getID()+"; name "+book.getName()+"; file "+book.getFile());
-        Log.d(LL," Auth "+book.getAuthor()+"Note "+book.getNote()+" type "+book.getType());
+        ViewDraw viewDraw = new ViewDraw(book);
+        viewDraw.start();
     }
 
 
