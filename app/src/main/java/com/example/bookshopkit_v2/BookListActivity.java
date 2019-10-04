@@ -14,21 +14,16 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
-import java.util.ArrayList;
-
 public class BookListActivity extends Activity  {
 final String LL ="LightLog";
-int num_books_v = 3;
-int num_books_h = 3;
-int num_books_visible = num_books_h * num_books_v;
+int BOOK_VIEW_V = 3;
+int BOOK_VIEW_H = 3;
+int BOOK_VIEW = BOOK_VIEW_H * BOOK_VIEW_V;
 int startID = 0;
 TableLayout book_list_lay;
 TableRow firstrow;
-ImageView[] booksImageViews = new ImageView[num_books_visible];
-TextView[] textViews = new TextView[num_books_visible];
+ImageView[] booksImageViews = new ImageView[BOOK_VIEW];
+TextView[] textViews = new TextView[BOOK_VIEW];
 TextView tw;
 
 //ArrayList booksAL = new ArrayList();
@@ -50,7 +45,7 @@ final int STATUS_NON = 0;
         book_list_lay = findViewById(R.id.book_list_lay);
         firstrow = findViewById(R.id.firstRow);
         tw = findViewById(R.id.tw);
-        bookListUpdate();
+        bookListUpdate(startID);
         //-----------Draw Book-------------
         h = new Handler(){
             public void handleMessage(android.os.Message msg){
@@ -66,23 +61,22 @@ final int STATUS_NON = 0;
                     tw.invalidate();
                     Log.d(LL,"STATUS_NON");
                 }else Log.d(LL,"STATUS_undefine");
-
             }
         };
         //------------------------------
         h.sendEmptyMessage(STATUS_NON);
     }
-    public void bookListUpdate(){
-        for(int i = 0 ; i < num_books_visible ; i++){
-            Book currentBook = new Book(i);
+    public void bookListUpdate(int startID){
+        for(int i = 0; i < BOOK_VIEW; i++){
+            Book currentBook = new Book(i+startID);
             WaitData waitdata = new WaitData(currentBook);
             waitdata.start();
         }
 
 
-      /*for(int i = 0 ; i < num_books_v ; i++){
+      /*for(int i = 0 ; i < BOOK_VIEW_V ; i++){
            TableRow row = new TableRow(this);
-           for(int j =0 ; j < num_books_h ; j++){
+           for(int j =0 ; j < BOOK_VIEW_H ; j++){
                books[startID] =  new Book(startID);
                imageViews[startID].setImageBitmap(books[startID].getPreviewBitmap(this));
                row.addView(imageViews[startID]);
