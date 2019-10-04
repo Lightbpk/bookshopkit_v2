@@ -14,6 +14,7 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class BookListActivity extends Activity  {
@@ -25,7 +26,7 @@ int startID = 0;
 TableLayout book_list_lay;
 TableRow firstrow;
 ImageView[] booksImageViews = new ImageView[BOOK_VIEW];
-ArrayList<TextView>  textViews = new ArrayList<TextView>();
+TextView[] textViews = new TextView[BOOK_VIEW];
 TextView tw;
 
 Handler h;
@@ -53,14 +54,14 @@ final int STATUS_NON = 0;
                 if(msg.what == STATUS_OK){
                     Book currentBook = (Book)msg.obj;
                     TextView currentText;
-                    textViews.add(new TextView(BookListActivity.this));
-                    currentText = textViews.get(msg.arg1);
+                    textViews[msg.arg1]= new TextView(BookListActivity.this);
+                    currentText = textViews[msg.arg1];
                     currentText.setText(currentBook.getName());
                     firstrow.addView(currentText);
                     firstrow.invalidate();
                     Log.d(LL,"STATUS_OK"+" "+currentBook.getName());
                 }else if(msg.what == STATUS_NON){
-                    tw.setText("nononon");
+                    tw.setText("non");
                     tw.invalidate();
                     Log.d(LL,"STATUS_NON");
                 }else Log.d(LL,"STATUS_undefine");
@@ -74,7 +75,7 @@ final int STATUS_NON = 0;
             int current_img_num= i;
             Book currentBook = new Book(i+startID);
             WaitData waitdata = new WaitData(currentBook, current_img_num);
-            waitdata.start();
+                waitdata.start();
         }
     }
 

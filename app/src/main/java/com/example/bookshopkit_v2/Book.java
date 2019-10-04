@@ -37,8 +37,7 @@ public class Book {
 
     public Book(int ID) {
         this.ID = ID;
-        //Fireget fireget = new Fireget();
-        //fireget.start();
+
         booksRef.child("b"+ID).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
