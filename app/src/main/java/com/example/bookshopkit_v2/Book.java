@@ -39,7 +39,7 @@ public class Book {
         this.ID = ID;
         //Fireget fireget = new Fireget();
         //fireget.start();
-        booksRef.addValueEventListener(new ValueEventListener() {
+        booksRef.child("b"+ID).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 lastBookBaseSnap = dataSnapshot;
@@ -76,8 +76,8 @@ public class Book {
         }
 
     public String getName(){
-        if(lastBookBaseSnap.child("b1").hasChild("Name")) {
-            name = "" + lastBookBaseSnap.child("b1").child("Name").getValue();
+        if(lastBookBaseSnap.hasChild("Name")) {
+            name = "" + lastBookBaseSnap.child("Name").getValue();
             Log.d(LL,"");
         }
         return name;

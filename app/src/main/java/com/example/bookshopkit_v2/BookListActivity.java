@@ -104,7 +104,7 @@ final int STATUS_NON = 0;
         @Override public void run() {
             Message msg;
             while (!currentBook.loadComplite){
-            Log.d(LL,"Loading");
+            //Log.d(LL,"Loading");
             }
             msg = h.obtainMessage(STATUS_OK,currentBook);
             h.sendMessage(msg);
