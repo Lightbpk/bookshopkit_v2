@@ -4,17 +4,4 @@
     android:id="@+id/book_list_lay"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".BookListActivity">
-
-    <TableRow
-        android:id="@+id/firstRow"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <TextView
-            android:id="@+id/tw"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="TextView" />
-    </TableRow>
-</TableLayout>
+    tools:context=".BookListActivity"/>
