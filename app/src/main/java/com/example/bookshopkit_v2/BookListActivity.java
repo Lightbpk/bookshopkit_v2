@@ -8,6 +8,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -17,8 +20,8 @@ import android.widget.TextView;
 
 public class BookListActivity extends Activity  {
 final String LL ="LightLog";
-int BOOK_VIEW_V = 3;
-int BOOK_VIEW_H = 3;
+int BOOK_VIEW_V = 2;
+int BOOK_VIEW_H = 2;
 int BOOK_VIEW = BOOK_VIEW_H * BOOK_VIEW_V;
 int startID = 0;
 int currentID = 0;
@@ -33,6 +36,10 @@ final int STATUS_OK = 1;
 final int STATUS_NON = 0;
 final int STATUS_BITMAP = 2;
 
+private static final int SWIPE_MIN_DISTANCE = 120;
+private static final int SWIPE_THRESHOLD_VELOCITY = 200;
+GestureDetector gdt;
+
     @SuppressLint("HandlerLeak")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +50,7 @@ final int STATUS_BITMAP = 2;
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_book_list);
         //------------------------------
-        //=============init books shablon==========================
+        //=============init books template==========================
         booksImageViews = new ImageView[BOOK_VIEW];
         textViews = new TextView[BOOK_VIEW];
         book_list_lay = findViewById(R.id.book_list_lay);
@@ -79,6 +86,14 @@ final int STATUS_BITMAP = 2;
         };
         //------------------------------
         h.sendEmptyMessage(STATUS_NON);
+        gdt = new GestureDetector(new GestureListener());
+        book_list_lay.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                gdt.onTouchEvent(event);
+                return true;
+            }
+        });
     }
     public void bookListUpdate(int startID){
         for(int i = 0; i < BOOK_VIEW; i++){
@@ -107,4 +122,32 @@ final int STATUS_BITMAP = 2;
             h.sendMessage(msg2);
         }
     }
+    //=======================touch interface====================
+    @Override
+    public boolean onTouchEvent(MotionEvent event){
+
+        return true;
+    }
+    private class GestureListener extends GestureDetector.SimpleOnGestureListener {
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+            if(e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+                Log.d(LL,"To the Left");
+                startID = startID - BOOK_VIEW;
+                if(startID < 0){
+                    startID = 0;
+                }
+                bookListUpdate(startID);
+                return false; // справа налево
+            }  else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+                Log.d(LL,"To the Right");
+                bookListUpdate(startID + BOOK_VIEW);
+                return false; // слева направо
+            }
+            else Log.d(LL,"Err swipe");
+            Log.d(LL,"shnopt");
+            return false;
+        }
+    }
+
 }
