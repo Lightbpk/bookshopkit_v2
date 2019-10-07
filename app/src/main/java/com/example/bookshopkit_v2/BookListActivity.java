@@ -3,6 +3,7 @@ package com.example.bookshopkit_v2;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -22,16 +23,15 @@ int BOOK_VIEW = BOOK_VIEW_H * BOOK_VIEW_V;
 int startID = 0;
 int currentID = 0;
 TableLayout book_list_lay;
-TableRow firstRow;
-ImageView[] booksImageViews = new ImageView[BOOK_VIEW];
-TextView[] textViews = new TextView[BOOK_VIEW];
+ImageView[] booksImageViews;
+TextView[] textViews;
 TableRow[] tableRows;
-TextView tw;
 
 Handler h;
 
 final int STATUS_OK = 1;
 final int STATUS_NON = 0;
+final int STATUS_BITMAP = 2;
 
     @SuppressLint("HandlerLeak")
     @Override
@@ -43,17 +43,22 @@ final int STATUS_NON = 0;
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_book_list);
         //------------------------------
+        //=============init books shablon==========================
+        booksImageViews = new ImageView[BOOK_VIEW];
+        textViews = new TextView[BOOK_VIEW];
         book_list_lay = findViewById(R.id.book_list_lay);
         tableRows = new TableRow[BOOK_VIEW_V];
-
         for(int i = 0 ; i < BOOK_VIEW_H ; i++){
             tableRows[i] = new TableRow(this);
             for(int j =currentID ; j < currentID + BOOK_VIEW_V ; j++){
+                tableRows[i].addView(booksImageViews[j] = new ImageView(this));
+                booksImageViews[j].setImageDrawable(getResources().getDrawable(R.drawable.empty));
                 tableRows[i].addView(textViews[j]= new TextView(this));
             }
             currentID = currentID + BOOK_VIEW_V;
             book_list_lay.addView(tableRows[i]);
         }
+        //=================================================
         bookListUpdate(startID);
         //-----------Draw Book-------------
         h = new Handler(){
@@ -65,7 +70,11 @@ final int STATUS_NON = 0;
                     Log.d(LL,"STATUS_OK"+" "+currentBook.getName());
                 }else if(msg.what == STATUS_NON){
                     Log.d(LL,"STATUS_NON");
-                }else Log.d(LL,"STATUS_undefine");
+                }else if(msg.what == STATUS_BITMAP){
+                    booksImageViews[msg.arg1].setImageBitmap((Bitmap) msg.obj);
+                    booksImageViews[msg.arg1].invalidate();
+                }
+                else Log.d(LL,"STATUS_undefine");
             }
         };
         //------------------------------
@@ -88,12 +97,14 @@ final int STATUS_NON = 0;
             this.current_img_num = current_img_num;
         }
         @Override public void run() {
-            Message msg;
+            Message msg,msg2;
             while (!currentBook.loadComplite){
             //Log.d(LL,"Loading");
             }
             msg = h.obtainMessage(STATUS_OK,current_img_num,0,currentBook);
             h.sendMessage(msg);
+            msg2 = h.obtainMessage(STATUS_BITMAP,current_img_num,0,currentBook.getPreviewBitmap());
+            h.sendMessage(msg2);
         }
     }
 }

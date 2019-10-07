@@ -89,12 +89,10 @@ public class Book {
         return previewUrl;
 
     }
-    public Bitmap getPreviewBitmap(Context context){
+    public Bitmap getPreviewBitmap(){
         Bitmap bm = null;
-
-        this.context = context;
         if(lastBookBaseSnap != null) {
-            if (lastBookBaseSnap.child("b0").hasChild("Preview")) {
+            if (lastBookBaseSnap.hasChild("Preview")) {
                 previewUrl = "" + lastBookBaseSnap.child("Preview").getValue();
                 try {
                     URL aURL = new URL(previewUrl);
@@ -105,12 +103,12 @@ public class Book {
                     bm = BitmapFactory.decodeStream(bis);
                     bis.close();
                     is.close();
+                    Log.d(LL, "Geting bitmap from "+ previewUrl );
                 } catch (IOException e) {
                     Log.d(LL, "Error getting bitmap", e);
                 }
             }
-        }else bm = BitmapFactory.decodeResource(context.getResources(),R.drawable.empty
-                );
+        }
         return bm;
     }
 
