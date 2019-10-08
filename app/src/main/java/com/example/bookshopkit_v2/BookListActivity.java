@@ -71,9 +71,15 @@ GestureDetector gdt;
         h = new Handler(){
             public void handleMessage(android.os.Message msg){
                 if(msg.what == STATUS_OK){
-                    Book currentBook = (Book)msg.obj;
+                    final Book currentBook = (Book)msg.obj;
                     textViews[msg.arg1].setText(currentBook.getName());
                     textViews[msg.arg1].invalidate();
+                    booksImageViews[msg.arg1].setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Log.d(LL,"Book "+currentBook.getName()+" clicked");
+                        }
+                    });
                     Log.d(LL,"STATUS_OK"+" "+currentBook.getName());
                 }else if(msg.what == STATUS_NON){
                     Log.d(LL,"STATUS_NON");
@@ -86,7 +92,7 @@ GestureDetector gdt;
         };
         //------------------------------
         h.sendEmptyMessage(STATUS_NON);
-        gdt = new GestureDetector(new GestureListener());
+        gdt = new GestureDetector(this,new GestureListener());
         book_list_lay.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -139,14 +145,31 @@ GestureDetector gdt;
                 }
                 bookListUpdate(startID);
                 return false; // справа налево
-            }  else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+            } else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
                 Log.d(LL,"To the Right");
                 bookListUpdate(startID + BOOK_VIEW);
                 return false; // слева направо
+            } else if (e1.getY() - e2.getY() > SWIPE_MIN_DISTANCE && Math.abs(velocityY) > SWIPE_THRESHOLD_VELOCITY){
+                Log.d(LL,"To the Up");
+                startID = startID - BOOK_VIEW;
+                if(startID < 0){
+                    startID = 0;
+                }
+                bookListUpdate(startID);
+                return false;
+            } else if (e2.getY() - e1.getY() > SWIPE_MIN_DISTANCE && Math.abs(velocityY) > SWIPE_THRESHOLD_VELOCITY){
+                bookListUpdate(startID + BOOK_VIEW);
+                Log.d(LL,"To the Down");
+                return false;
             }
             else Log.d(LL,"Err swipe");
             Log.d(LL,"shnopt");
             return false;
+        }
+        @Override
+        public boolean onSingleTapUp(MotionEvent e) {
+
+            return super.onSingleTapUp(e);
         }
     }
 
