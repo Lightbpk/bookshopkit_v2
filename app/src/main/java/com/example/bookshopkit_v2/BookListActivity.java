@@ -11,12 +11,15 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+
+import java.util.HashMap;
 
 public class BookListActivity extends Activity  {
 final String LL ="LightLog";
@@ -55,8 +58,11 @@ GestureDetector gdt;
         textViews = new TextView[BOOK_VIEW];
         book_list_lay = findViewById(R.id.book_list_lay);
         tableRows = new TableRow[BOOK_VIEW_V];
+        TableRow.LayoutParams lp = new TableRow.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        final HashMap<Integer, Book> booksMap = new HashMap<>();
         for(int i = 0 ; i < BOOK_VIEW_H ; i++){
             tableRows[i] = new TableRow(this);
+            tableRows[i].setLayoutParams(lp);
             for(int j =currentID ; j < currentID + BOOK_VIEW_V ; j++){
                 tableRows[i].addView(booksImageViews[j] = new ImageView(this));
                 booksImageViews[j].setImageDrawable(getResources().getDrawable(R.drawable.empty));
@@ -71,21 +77,24 @@ GestureDetector gdt;
         h = new Handler(){
             public void handleMessage(android.os.Message msg){
                 if(msg.what == STATUS_OK){
+                    Log.d(LL,"STATUS_OK");
                     final Book currentBook = (Book)msg.obj;
                     textViews[msg.arg1].setText(currentBook.getName());
                     textViews[msg.arg1].invalidate();
-                    booksImageViews[msg.arg1].setOnClickListener(new View.OnClickListener() {
+                    booksMap.put(msg.arg1,currentBook);
+                    /*booksImageViews[msg.arg1].setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             Log.d(LL,"Book "+currentBook.getName()+" clicked");
                         }
-                    });
-                    Log.d(LL,"STATUS_OK"+" "+currentBook.getName());
+                    });*/
+                    //Log.d(LL,"STATUS_OK"+" "+currentBook.getName());
                 }else if(msg.what == STATUS_NON){
                     Log.d(LL,"STATUS_NON");
                 }else if(msg.what == STATUS_BITMAP){
                     booksImageViews[msg.arg1].setImageBitmap((Bitmap) msg.obj);
                     booksImageViews[msg.arg1].invalidate();
+
                 }
                 else Log.d(LL,"STATUS_undefine");
             }
@@ -93,27 +102,27 @@ GestureDetector gdt;
         //------------------------------
         h.sendEmptyMessage(STATUS_NON);
         gdt = new GestureDetector(this,new GestureListener());
-        book_list_lay.setOnTouchListener(new View.OnTouchListener() {
+        /*book_list_lay.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 gdt.onTouchEvent(event);
                 return true;
             }
-        });
+        });*/
     }
     public void bookListUpdate(int startID){
         for(int i = 0; i < BOOK_VIEW; i++){
             int current_img_num= i;
             Book currentBook = new Book(i+startID);
-            WaitData waitdata = new WaitData(currentBook, current_img_num);
-                waitdata.start();
+            WaitDataThread waitdatathread = new WaitDataThread(currentBook, current_img_num);
+                waitdatathread.start();
         }
     }
 
-    class WaitData extends Thread{
+    class WaitDataThread extends Thread{
         Book currentBook;
         int current_img_num;
-        public WaitData(Book currentBook,int current_img_num){
+        public WaitDataThread(Book currentBook, int current_img_num){
             this.currentBook = currentBook;
             this.current_img_num = current_img_num;
         }
@@ -131,7 +140,7 @@ GestureDetector gdt;
     //=======================touch interface====================
     @Override
     public boolean onTouchEvent(MotionEvent event){
-
+        gdt.onTouchEvent(event);
         return true;
     }
     private class GestureListener extends GestureDetector.SimpleOnGestureListener {
@@ -168,6 +177,23 @@ GestureDetector gdt;
         }
         @Override
         public boolean onSingleTapUp(MotionEvent e) {
+            for(int i =0 ;i < BOOK_VIEW ; i++){
+                if (e.getX() > booksImageViews[i].getX() && e.getX() < (booksImageViews[i].getX() + booksImageViews[i].getWidth()) ){
+                    if(e.getY() > booksImageViews[i].getY() && e.getY() < (booksImageViews[i].getY()+ booksImageViews[i].getHeight())){
+                        Log.d(LL,"book "+i +" clicked");
+                        Log.d(LL," bX "+booksImageViews[i].getX());
+                        Log.d(LL," bX +W "+(booksImageViews[i].getX() + booksImageViews[i].getWidth()));
+                        Log.d(LL," bY "+booksImageViews[i].getY());
+                        Log.d(LL," bY +H "+(booksImageViews[i].getY()+ booksImageViews[i].getHeight()));
+                    }
+                }
+                Log.d(LL,"");
+            }
+            Log.d(LL,"Single Tap");
+            Log.d(LL," X "+e.getX());
+            Log.d(LL," Y "+e.getY());
+
+
 
             return super.onSingleTapUp(e);
         }
