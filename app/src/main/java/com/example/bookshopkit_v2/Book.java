@@ -60,15 +60,6 @@ public class Book {
             Log.d(LL,"Interrupt exception");
         }*/
     }
-    class Fireget extends Thread{
-
-        @Override public void run() {
-
-        }
-        boolean isComplite(){
-            return loadComplite;
-        }
-    }
 
     public int getID () {
             return ID;

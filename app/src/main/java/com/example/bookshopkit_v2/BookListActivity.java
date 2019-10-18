@@ -176,7 +176,8 @@ GestureDetector gdt;
             return false;
         }
         @Override
-        public boolean onSingleTapUp(MotionEvent e) {
+        public boolean onSingleTapUp(MotionEvent e){
+
             for(int i =0 ;i < BOOK_VIEW ; i++){
                 if (e.getX() > booksImageViews[i].getX() && e.getX() < (booksImageViews[i].getX() + booksImageViews[i].getWidth()) ){
                     if(e.getY() > booksImageViews[i].getY() && e.getY() < (booksImageViews[i].getY()+ booksImageViews[i].getHeight())){
