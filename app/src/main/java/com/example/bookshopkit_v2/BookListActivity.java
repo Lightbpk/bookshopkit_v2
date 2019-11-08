@@ -63,13 +63,20 @@ GestureDetector gdt;
         for(int i = 0 ; i < BOOK_VIEW_H ; i++){
             tableRows[i] = new TableRow(this);
             tableRows[i].setLayoutParams(lp);
+            Log.d(LL,"Add new Row");
+            Log.d(LL,"i = " +i);
             for(int j =currentID ; j < currentID + BOOK_VIEW_V ; j++){
                 tableRows[i].addView(booksImageViews[j] = new ImageView(this));
                 booksImageViews[j].setImageDrawable(getResources().getDrawable(R.drawable.empty));
                 tableRows[i].addView(textViews[j]= new TextView(this));
+                Log.d(LL,"j = " +j);
             }
             currentID = currentID + BOOK_VIEW_V;
             book_list_lay.addView(tableRows[i]);
+            tableRows[i].invalidate();
+        }
+        for(int k = 0; k < BOOK_VIEW; k++){
+            Log.d(LL,"ImageView "+ k + " x "+booksImageViews[k].getX() + " y "+ booksImageViews[k].getY());
         }
         //=================================================
         bookListUpdate(startID);
@@ -94,6 +101,7 @@ GestureDetector gdt;
                 }else if(msg.what == STATUS_BITMAP){
                     booksImageViews[msg.arg1].setImageBitmap((Bitmap) msg.obj);
                     booksImageViews[msg.arg1].invalidate();
+                    Log.d(LL,"Book "+msg.arg1+ " x "+ booksImageViews[msg.arg1].getX()+ " y "+ booksImageViews[msg.arg1].getY());
 
                 }
                 else Log.d(LL,"STATUS_undefine");
